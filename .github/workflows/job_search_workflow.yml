@@ -40,7 +40,7 @@ jobs:
           ADZUNA_APP_KEY:     ${{ secrets.ADZUNA_APP_KEY }}
           GMAIL_ADDRESS:      ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
-        run: python job_search.py
+        run: python job-search-jobs-only/job_search.py
 
       - name: Upload Excel as backup artifact
         uses: actions/upload-artifact@v4
