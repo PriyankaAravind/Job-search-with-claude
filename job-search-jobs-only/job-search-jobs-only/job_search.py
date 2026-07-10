@@ -21,14 +21,29 @@ from openpyxl.utils import get_column_letter
 
 # ── Config — edit these to match your profile ─────────────────────────────────
 
-SKILLS = ["Python", "SQL", "GCP", "PySpark", "Airflow", "Power BI", "Tableau"]
+SKILLS = ["Python", "SQL", "Excel", "Power BI", "Tableau", "Data analysis", "Stakeholder Management", "Cross fuunctional integration",
+          "full funnel campaign management", "client managemnent", "bid management", "budget management" ]
 
 SEARCH_QUERIES = [
-    "Data Engineer",
-    "Senior Data Engineer",
-    "Data Engineer Python",
-    "Data Engineer GCP",
-    "Data Engineer Airflow",
+    "Data Analyst",
+    "Junior Data Analyst",
+    "Associate Data Analyst",
+    "Business Analyst"
+    "Business Intelligence (BI) Analyst",
+    "Marketing Analyst",
+    "Insights Analyst",
+    "Reporting Analyst",
+    "Senior Paid Search Specialist",
+    "Senior SEM Specialist",
+    "Senior PPC Specialist",
+    "Search Marketing Analyst",
+    "Senior Paid Search Strategist",
+    "Paid Search Manager",
+    "SEM Manager",
+    "PPC Manager",
+    "Senior Paid Search Manager",
+    "SEM Account Manager",
+    "Performance Marketing Manager"
 ]
 
 # ── Constants ──────────────────────────────────────────────────────────────────
