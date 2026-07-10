@@ -29,9 +29,9 @@ jobs:
           echo "Gmail address set:  $([ -n "$GMAIL_ADDRESS" ]     && echo YES || echo NO)"
           echo "App password set:   $([ -n "$GMAIL_APP_PASSWORD" ]&& echo YES || echo NO)"
         env:
-          ADZUNA_APP_ID:      ${{ secrets.ADZUNA_APP_ID }}
-          ADZUNA_APP_KEY:     ${{ secrets.ADZUNA_APP_KEY }}
-          GMAIL_ADDRESS:      ${{ secrets.GMAIL_ADDRESS }}
+          ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
+          ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
 
       - name: Run job search
