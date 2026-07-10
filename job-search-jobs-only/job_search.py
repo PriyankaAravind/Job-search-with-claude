@@ -1,5 +1,5 @@
 """
-Daily Data Engineer Job Search
+Daily Data Analyst paid search Job Search
 - Searches jobs via Adzuna API (free, 250 requests/day)
 - Emails a formatted Excel report every morning
 - No AI, no resume, no cost
