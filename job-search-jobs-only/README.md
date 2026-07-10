@@ -1,6 +1,6 @@
-# Daily Data Engineer Job Search
+# Daily Data Analyst Paid Search Job Search
 
-Runs at 6 AM Phoenix MST every day via GitHub Actions.
+Runs at * AM Toronto EDT every day via GitHub Actions.
 Emails you an Excel report with 170+ Data Engineer roles from the last 24 hours.
 
 100% free. No AI. No resume. Just jobs.
