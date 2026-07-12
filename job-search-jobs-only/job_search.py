@@ -21,8 +21,8 @@ from openpyxl.utils import get_column_letter
 
 # ── Config — edit these to match your profile ─────────────────────────────────
 
-SKILLS = ["Python", "SQL", "Excel", "Power BI", "Tableau", "Data analysis", "Stakeholder Management", "Cross fuunctional",
-          "full funnel campaign management", "client managemnent", "bid management", "budget management","google ads","bing ads",
+SKILLS = ["Python", "SQL", "Excel", "PowerBI", "Tableau", "Data analysis", "Stakeholder engagement", "Cross functional",
+          "full funnel", "campaign management", "client management", "bid management", "budget management","google ads","google adwords", "bing ads",
           "google ads editor", "google sheets","Budget", "bid", "presenting insights to clients" ]
 
 SEARCH_QUERIES = [
