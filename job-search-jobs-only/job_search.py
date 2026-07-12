@@ -64,7 +64,7 @@ def fetch_jobs(app_id: str, app_key: str) -> list[dict]:
         print(f"  Searching: '{query}' ...")
         for page in range(1, 4):
             params = {
-                "app_id": app_id, "app_key": app_key, "what": query,"where": "toronto"
+                "app_id": app_id, "app_key": app_key, "what": query,"where": "toronto",
                 "results_per_page": RESULTS_PER_PAGE,
                 "sort_by": "date", "max_days_old": 1,
             }
