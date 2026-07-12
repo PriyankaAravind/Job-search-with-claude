@@ -188,7 +188,7 @@ def build_excel(jobs: list[dict], filepath: Path) -> None:
 
     # Title row
     ws.merge_cells(f"A1:{last_col}1")
-    ws["A1"] = f"Data Engineer Job Search  —  {run_date}  |  Past 24 Hours"
+    ws["A1"] = f"Data Analyst Job Search  —  {run_date}  |  Past 24 Hours"
     ws["A1"].font = Font(name="Arial", bold=True, size=14, color="1F4E79")
     ws["A1"].alignment = Alignment(horizontal="center", vertical="center")
     ws.row_dimensions[1].height = 28
