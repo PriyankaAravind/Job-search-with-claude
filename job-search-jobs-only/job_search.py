@@ -21,8 +21,9 @@ from openpyxl.utils import get_column_letter
 
 # ── Config — edit these to match your profile ─────────────────────────────────
 
-SKILLS = ["Python", "SQL", "Excel", "Power BI", "Tableau", "Data analysis", "Stakeholder Management", "Cross fuunctional integration",
-          "full funnel campaign management", "client managemnent", "bid management", "budget management" ]
+SKILLS = ["Python", "SQL", "Excel", "Power BI", "Tableau", "Data analysis", "Stakeholder Management", "Cross fuunctional",
+          "full funnel campaign management", "client managemnent", "bid management", "budget management","google ads","bing ads",
+          "google ads editor", "google sheets","Budget", "bid", "presenting insights to clients" ]
 
 SEARCH_QUERIES = [
     "Data Analyst",
@@ -261,10 +262,10 @@ def build_excel(jobs: list[dict], filepath: Path) -> None:
 def send_email(excel_path: Path, job_count: int,
                gmail_address: str, app_password: str) -> None:
     today   = datetime.now().strftime("%B %d, %Y")
-    subject = f"Data Engineer Jobs — {job_count} Roles Found — {today}"
+    subject = f"Data Analyst Jobs — {job_count} Roles Found — {today}"
     body    = f"""Good morning!
 
-Here are the Data Engineer roles posted in the last 24 hours.
+Here are the Data Analyst roles posted in the last 24 hours.
 
   Total roles found:      {job_count}
   Skills matched against: {', '.join(SKILLS)}
@@ -304,9 +305,9 @@ def main():
     app_password   = os.environ["GMAIL_APP_PASSWORD"]
 
     today     = datetime.now().strftime("%Y-%m-%d")
-    out_excel = OUTPUT_DIR / f"DataEngineer_Jobs_{today}.xlsx"
+    out_excel = OUTPUT_DIR / f"DataAnalyst_Jobs_{today}.xlsx"
 
-    print("=== Data Engineer Job Search ===")
+    print("=== Data Analyst Job Search ===")
     print(f"Date: {today}\n")
 
     print("[1/3] Fetching jobs from Adzuna...")
