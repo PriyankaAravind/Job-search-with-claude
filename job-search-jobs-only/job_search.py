@@ -29,7 +29,7 @@ SEARCH_QUERIES = [
     "Data Analyst",
     "Junior Data Analyst",
     "Associate Data Analyst",
-    "Business Analyst"
+    "Business Analyst",
     "Business Intelligence (BI) Analyst",
     "Marketing Analyst",
     "Insights Analyst",
