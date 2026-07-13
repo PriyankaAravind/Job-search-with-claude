@@ -89,6 +89,12 @@ def fetch_jobs(app_id: str, app_key: str) -> list[dict]:
 
 
 # ── Data Processing ────────────────────────────────────────────────────────────
+
+remote_terms = ["remote","hybrid","work from home","wfh","flexible","remote first","fully remote"]
+
+def is_remote_job(title, desc):
+text = f"{title} {desc}".lower()
+return any(term in text for term in remote_terms)
               
 def score_job(job: dict) -> int:
     score=0
@@ -108,43 +114,24 @@ def score_job(job: dict) -> int:
     #####################################################
     # Skills
     #####################################################
-
+    text = f"{title} {desc}"
     for skill in SKILLS:
-        if skill.lower() in desc:
+        if skill.lower() in text:
             score += 4
 
-    #####################################################
-    # Remote
-    #####################################################
-
-    remote_terms = ["remote","hybrid","work from home","wfh","flexible","remote first","fully remote"]
-
-    def is_remote_job(title, desc):
-    text = f"{title} {desc}".lower()
-    return any(term in text for term in remote_terms)
-               
-    #text = (title + " " + desc).lower()
-    #remote = any(term in text for term in remote_terms)
-    #remote_value = "Yes" if remote else "No"
-    #if any(x in desc for x in remote_terms):
-
-    # if is_remote_job(title, desc):
-     #        score += 8
-          
-      #return score
-
+    
     #####################################################
     # Toronto
     #####################################################
 
-    location = str(job.get("location","")).lower()
+    #location = str(job.get("location","")).lower()
 
-    gta = ["Toronto","North York","Scarborough","Etobicoke", "York","East York", "Mississauga", "Brampton","Markham","Richmond Hill","Vaughan",
-    "Oakville","Milton","Ajax","Pickering","Whitby","Oshawa","Burlington"]
+    #gta = ["Toronto","North York","Scarborough","Etobicoke", "York","East York", "Mississauga", "Brampton","Markham","Richmond Hill","Vaughan",
+    #"Oakville","Milton","Ajax","Pickering","Whitby","Oshawa","Burlington"]
 
-    if any(city in location for city in gta):
-        score += 5
-    return score
+    #if any(city in location for city in gta):
+     #   score += 5
+    #return score
 
 def parse_jobs(raw: list[dict]) -> list[dict]:
     parsed = []
@@ -156,7 +143,7 @@ def parse_jobs(raw: list[dict]) -> list[dict]:
         except Exception:
             posted = "Unknown"
 
-      area     = (job.get("location") or {}).get("area", [])
+      area = (job.get("location") or {}).get("area", [])
       location = ", ".join(area) if area else "Unknown"
        #       if not anyany(city.lower() in location.lower() for city in GTA_LOCATIONS):
     #continue
@@ -167,8 +154,8 @@ def parse_jobs(raw: list[dict]) -> list[dict]:
       #  salary  = (f"${sal_min:,.0f} - ${sal_max:,.0f}" if sal_min and sal_max
        #            else f"${sal_min:,.0f}+" if sal_min else "Not listed")
 
-      sal_min = job.get("salary_min")
-      sal_max = job.get("salary_max")
+     sal_min = job.get("salary_min")
+     sal_max = job.get("salary_max")
 
      if sal_min is not None and sal_max is not None:
          salary = f"${sal_min:,.0f} - ${sal_max:,.0f}"
@@ -220,12 +207,12 @@ COLUMNS = [
     ("Salary",                         22),
     ("Posted",                         20),
     ("Skills Match",                   30),
-    (f"Match Score (/{len(SKILLS)})",  14),
+    (f"Match Score ",                  14),
     ("Key Qualifications",             45),
     ("Apply Link",                     15),
 ]
 
-SCORE_COL = f"Match Score (/{len(SKILLS)})"
+SCORE_COL = f"Match Score
 
 
 def build_excel(jobs: list[dict], filepath: Path) -> None:
