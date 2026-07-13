@@ -21,31 +21,16 @@ from openpyxl.utils import get_column_letter
 
 # ── Config — edit these to match your profile ─────────────────────────────────
 
-SKILLS = ["Python", "SQL", "Excel", "PowerBI", "Tableau", "Data analysis", "Stakeholder engagement", "Cross functional",
+SKILLS = ["Python", "SQL", "Excel", "PowerBI","Power BI", "Tableau", "statistics", "dashboard","reporting","visualization","data analytics",
+          "Data analysis", "Stakeholder management", "Cross functional","google analytics", "GA4","looker studio", "GTM","microsoft ads", 
           "full funnel", "campaign management", "client management", "bid management", "budget management","google ads","google adwords", "bing ads",
-          "google ads editor", "google sheets","Budget", "bid", "presenting insights to clients" ]
+          "google ads editor", "google sheets","Budget", "bid", "presentation","insights","campaign optimization" ]
 
-SEARCH_QUERIES = [
-    "Data Analyst",
-    "Junior Data Analyst",
-    "Associate Data Analyst",
-    "Business Analyst",
-    "Business Intelligence (BI) Analyst",
-    "Marketing Analyst",
-    "Insights Analyst",
-    "Reporting Analyst",
-    "Senior Paid Search Specialist",
-    "Senior SEM Specialist",
-    "Senior PPC Specialist",
-    "Search Marketing Analyst",
-    "Senior Paid Search Strategist",
-    "Paid Search Manager",
-    "SEM Manager",
-    "PPC Manager",
-    "Senior Paid Search Manager",
-    "SEM Account Manager",
-    "Performance Marketing Manager"
-]
+SEARCH_QUERIES = ["Data Analyst","Junior Data Analyst","Associate Data Analyst","Business Analyst","Business Intelligence (BI) Analyst",
+    "BI Analyst","Marketing Analyst","Insights Analyst","Reporting Analyst",
+          
+    "Senior Paid Search Specialist","Senior SEM Specialist","Senior PPC Specialist","Search Marketing Analyst","Senior Paid Search Strategist",
+    "Paid Search Manager","SEM Manager","PPC Manager","Senior Paid Search Manager","SEM Account Manager","Performance Marketing Manager"]
 
 # ── Constants ──────────────────────────────────────────────────────────────────
 
@@ -56,7 +41,6 @@ HOURS_BACK       = 24
 RESULTS_PER_PAGE = 20
 
 # ── Job Fetching ───────────────────────────────────────────────────────────────
-
 def fetch_jobs(app_id: str, app_key: str) -> list[dict]:
     all_jobs, seen_ids = [], set()
     cutoff = datetime.now(timezone.utc) - timedelta(hours=HOURS_BACK)
@@ -105,12 +89,62 @@ def fetch_jobs(app_id: str, app_key: str) -> list[dict]:
 
 
 # ── Data Processing ────────────────────────────────────────────────────────────
-
+              
 def score_job(job: dict) -> int:
-    text = ((job.get("title") or "") + " " +
-            (job.get("description") or "")).lower()
-    return sum(1 for s in SKILLS if s.lower() in text)
+    score=0
+    
+    # Title Weight
+    #####################################################
+    title = (job.get("title") or "").lower()
+    desc = (job.get("description") or "").lower()
+    text = f"{title} {desc}"
+    title_keywords = {"data analyst":35,"marketing analyst":35,"business analyst":30,"insights analyst":30,"reporting analyst":30,
+        "bi analyst":30,"business intelligence":30,"paid search":35,"sem":35,"ppc":35, "performance marketing":30}
 
+    for keyword, pts in title_keywords.items():
+        if keyword in title:
+            score += pts
+
+    #####################################################
+    # Skills
+    #####################################################
+
+    for skill in SKILLS:
+        if skill.lower() in desc:
+            score += 4
+
+    #####################################################
+    # Remote
+    #####################################################
+
+    remote_terms = ["remote","hybrid","work from home","wfh","flexible","remote first","fully remote"]
+
+    def is_remote_job(title, desc):
+    text = f"{title} {desc}".lower()
+    return any(term in text for term in remote_terms)
+               
+    #text = (title + " " + desc).lower()
+    #remote = any(term in text for term in remote_terms)
+    #remote_value = "Yes" if remote else "No"
+    #if any(x in desc for x in remote_terms):
+
+    # if is_remote_job(title, desc):
+     #        score += 8
+          
+      #return score
+
+    #####################################################
+    # Toronto
+    #####################################################
+
+    location = str(job.get("location","")).lower()
+
+    gta = ["Toronto","North York","Scarborough","Etobicoke", "York","East York", "Mississauga", "Brampton","Markham","Richmond Hill","Vaughan",
+    "Oakville","Milton","Ajax","Pickering","Whitby","Oshawa","Burlington"]
+
+    if any(city in location for city in gta):
+        score += 5
+    return score
 
 def parse_jobs(raw: list[dict]) -> list[dict]:
     parsed = []
@@ -122,24 +156,44 @@ def parse_jobs(raw: list[dict]) -> list[dict]:
         except Exception:
             posted = "Unknown"
 
-        area     = (job.get("location") or {}).get("area", [])
-        location = ", ".join(filter(None, area[-2:])) if area else "Unknown"
+      area     = (job.get("location") or {}).get("area", [])
+      location = ", ".join(area) if area else "Unknown"
+       #       if not anyany(city.lower() in location.lower() for city in GTA_LOCATIONS):
+    #continue
+          #(filter(None, area[-2:])) if area else "Unknown"
 
-        sal_min = job.get("salary_min")
-        sal_max = job.get("salary_max")
-        salary  = (f"${sal_min:,.0f} - ${sal_max:,.0f}" if sal_min and sal_max
-                   else f"${sal_min:,.0f}+" if sal_min else "Not listed")
+   ##     sal_min = job.get("salary_min")
+     #   sal_max = job.get("salary_max")
+      #  salary  = (f"${sal_min:,.0f} - ${sal_max:,.0f}" if sal_min and sal_max
+       #            else f"${sal_min:,.0f}+" if sal_min else "Not listed")
+
+      sal_min = job.get("salary_min")
+      sal_max = job.get("salary_max")
+
+     if sal_min is not None and sal_max is not None:
+         salary = f"${sal_min:,.0f} - ${sal_max:,.0f}"
+
+     elif sal_min is not None:
+         salary = f"${sal_min:,.0f}+"
+
+    elif sal_max is not None:
+         salary = f"Up to ${sal_max:,.0f}"
+
+    else:
+         salary = "Not listed"
+              
 
         desc    = (job.get("description") or "")[:3000]
         title   = job.get("title") or ""
         company = (job.get("company") or {}).get("display_name") or ""
         matched = [s for s in SKILLS if s.lower() in (desc + title).lower()]
+        remote = is_remote_job(title, desc)
 
         parsed.append({
             "Title":              title,
             "Company":            company,
             "Location":           location,
-            "Remote":             "Yes" if "remote" in (title + desc).lower() else "No",
+            "Remote":             "Yes" if remote else "No",
             "Salary":             salary,
             "Posted":             posted,
             "Skills Match":       ", ".join(matched),
@@ -222,7 +276,7 @@ def build_excel(jobs: list[dict], filepath: Path) -> None:
         ws.append([job.get(h if h != SCORE_COL else "Match Score", "")
                    for h in headers])
 
-        is_high = job.get("Match Score", 0) >= (len(SKILLS) - 2)
+        is_high = job.get("Match Score", 0) >= 70
         fill    = HIGH_FILL if is_high else (
                   ALT_FILL  if row_num % 2 == 0 else PatternFill())
 
