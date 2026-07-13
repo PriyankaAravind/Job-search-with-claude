@@ -22,12 +22,15 @@ from openpyxl.utils import get_column_letter
 # ── Config — edit these to match your profile ─────────────────────────────────
 
 SKILLS = ["Python", "SQL", "Excel", "PowerBI","Power BI", "Tableau", "statistics", "dashboard","reporting","visualization","data analytics",
-          "Data analysis", "Stakeholder management", "Cross functional","google analytics" ]
+          "Data analysis", "Stakeholder management", "Cross functional","google analytics" "Growth Analyst","Digital Analyst",
+          "Marketing Data Analyst","Campaign Analyst","Analytics Specialist","Product Analyst"]
 
 SEARCH_QUERIES = ["Data Analyst","Junior Data Analyst","Associate Data Analyst","Business Analyst","Business Intelligence (BI) Analyst",
     "BI Analyst","Marketing Analyst","Insights Analyst","Reporting Analyst"]
-SKILLS = list(set(SKILLS))
-SEARCH_QUERIES = list(set(SEARCH_QUERIES))
+
+SKILLS = list(dict.fromkeys(SKILLS))
+SEARCH_QUERIES = list(dict.fromkeys(SEARCH_QUERIES))
+
 # ── Constants ──────────────────────────────────────────────────────────────────
 
 OUTPUT_DIR       = Path("output")
@@ -45,7 +48,7 @@ def fetch_jobs(app_id: str, app_key: str) -> list[dict]:
         print(f"  Searching: '{query}' ...")
         for page in range(1, 4):
             params = {
-                "app_id": app_id, "app_key": app_key, "what": query,"where": "toronto",
+                "app_id": app_id, "app_key": app_key, "what": query,"where": "toronto","distance":50,
                 "results_per_page": RESULTS_PER_PAGE,
                 "sort_by": "date", "max_days_old": 1,
             }
@@ -111,9 +114,12 @@ def score_job(job: dict) -> int:
     # Skills
     #####################################################
     text = f"{title} {desc}"
-    for skill in SKILLS:
-        if skill.lower() in text:
-            score += 4
+    skill_weights = {"python": 8,"sql": 8,"excel": 6,"power bi": 8,"powerbi": 8,"tableau": 6,"statistics": 6,"dashboard": 5,
+    "reporting": 5,"visualization": 5,"data analytics": 8,"data analysis": 8,"google analytics": 4}
+    
+    for skill, pts in skill_weights.items():
+        if skill in text:
+          score += pts
     return score
     
    
@@ -183,7 +189,7 @@ COLUMNS = [
     ("Salary",                         22),
     ("Posted",                         20),
     ("Skills Match",                   30),
-    ("Match Score ",                  14),
+    ("Match Score",                    14),
     ("Key Qualifications",             45),
     ("Apply Link",                     15),
 ]
@@ -239,7 +245,7 @@ def build_excel(jobs: list[dict], filepath: Path) -> None:
         ws.append([job.get(h if h != SCORE_COL else "Match Score", "")
                    for h in headers])
 
-        is_high = job.get("Match Score", 0) >= 70
+        is_high = job.get("Match Score", 0) >= 55
         fill    = HIGH_FILL if is_high else (
                   ALT_FILL  if row_num % 2 == 0 else PatternFill())
 
