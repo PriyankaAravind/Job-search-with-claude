@@ -1,5 +1,5 @@
 """
-Daily Data Analyst paid search Job Search
+Daily Data Analyst Job Search
 - Searches jobs via Adzuna API (free, 250 requests/day)
 - Emails a formatted Excel report every morning
 - No AI, no resume, no cost
@@ -22,16 +22,12 @@ from openpyxl.utils import get_column_letter
 # ── Config — edit these to match your profile ─────────────────────────────────
 
 SKILLS = ["Python", "SQL", "Excel", "PowerBI","Power BI", "Tableau", "statistics", "dashboard","reporting","visualization","data analytics",
-          "Data analysis", "Stakeholder management", "Cross functional","google analytics", "GA4","looker studio", "GTM","microsoft ads", 
-          "full funnel", "campaign management", "client management", "bid management", "budget management","google ads","google adwords", "bing ads",
-          "google ads editor", "google sheets","Budget", "bid", "presentation","insights","campaign optimization" ]
+          "Data analysis", "Stakeholder management", "Cross functional","google analytics" ]
 
 SEARCH_QUERIES = ["Data Analyst","Junior Data Analyst","Associate Data Analyst","Business Analyst","Business Intelligence (BI) Analyst",
-    "BI Analyst","Marketing Analyst","Insights Analyst","Reporting Analyst",
-          
-    "Senior Paid Search Specialist","Senior SEM Specialist","Senior PPC Specialist","Search Marketing Analyst","Senior Paid Search Strategist",
-    "Paid Search Manager","SEM Manager","PPC Manager","Senior Paid Search Manager","SEM Account Manager","Performance Marketing Manager"]
-
+    "BI Analyst","Marketing Analyst","Insights Analyst","Reporting Analyst"]
+SKILLS = list(set(SKILLS))
+SEARCH_QUERIES = list(set(SEARCH_QUERIES))
 # ── Constants ──────────────────────────────────────────────────────────────────
 
 OUTPUT_DIR       = Path("output")
@@ -93,8 +89,8 @@ def fetch_jobs(app_id: str, app_key: str) -> list[dict]:
 remote_terms = ["remote","hybrid","work from home","wfh","flexible","remote first","fully remote"]
 
 def is_remote_job(title, desc):
-text = f"{title} {desc}".lower()
-return any(term in text for term in remote_terms)
+    text = f"{title} {desc}".lower()
+    return any(term in text for term in remote_terms)
               
 def score_job(job: dict) -> int:
     score=0
@@ -104,8 +100,8 @@ def score_job(job: dict) -> int:
     title = (job.get("title") or "").lower()
     desc = (job.get("description") or "").lower()
     text = f"{title} {desc}"
-    title_keywords = {"data analyst":35,"marketing analyst":35,"business analyst":30,"insights analyst":30,"reporting analyst":30,
-        "bi analyst":30,"business intelligence":30,"paid search":35,"sem":35,"ppc":35, "performance marketing":30}
+    title_keywords = {"data analyst":50,"marketing analyst":45,"business analyst":40,"insights analyst":45,"reporting analyst":30,
+        "bi analyst":40,"business intelligence":40}
 
     for keyword, pts in title_keywords.items():
         if keyword in title:
@@ -118,21 +114,9 @@ def score_job(job: dict) -> int:
     for skill in SKILLS:
         if skill.lower() in text:
             score += 4
-
+    return score
     
-    #####################################################
-    # Toronto
-    #####################################################
-
-    #location = str(job.get("location","")).lower()
-
-    #gta = ["Toronto","North York","Scarborough","Etobicoke", "York","East York", "Mississauga", "Brampton","Markham","Richmond Hill","Vaughan",
-    #"Oakville","Milton","Ajax","Pickering","Whitby","Oshawa","Burlington"]
-
-    #if any(city in location for city in gta):
-     #   score += 5
-    #return score
-
+   
 def parse_jobs(raw: list[dict]) -> list[dict]:
     parsed = []
     for job in raw:
@@ -143,31 +127,23 @@ def parse_jobs(raw: list[dict]) -> list[dict]:
         except Exception:
             posted = "Unknown"
 
-      area = (job.get("location") or {}).get("area", [])
-      location = ", ".join(area) if area else "Unknown"
-       #       if not anyany(city.lower() in location.lower() for city in GTA_LOCATIONS):
-    #continue
-          #(filter(None, area[-2:])) if area else "Unknown"
+        area = (job.get("location") or {}).get("area", [])
+        location = ", ".join(area) if area else "Unknown"
+      
+        sal_min = job.get("salary_min")
+        sal_max = job.get("salary_max")
 
-   ##     sal_min = job.get("salary_min")
-     #   sal_max = job.get("salary_max")
-      #  salary  = (f"${sal_min:,.0f} - ${sal_max:,.0f}" if sal_min and sal_max
-       #            else f"${sal_min:,.0f}+" if sal_min else "Not listed")
+        if sal_min is not None and sal_max is not None:
+             salary = f"${sal_min:,.0f} - ${sal_max:,.0f}"
 
-     sal_min = job.get("salary_min")
-     sal_max = job.get("salary_max")
+        elif sal_min is not None:
+             salary = f"${sal_min:,.0f}+"
 
-     if sal_min is not None and sal_max is not None:
-         salary = f"${sal_min:,.0f} - ${sal_max:,.0f}"
+        elif sal_max is not None:
+             salary = f"Up to ${sal_max:,.0f}"
 
-     elif sal_min is not None:
-         salary = f"${sal_min:,.0f}+"
-
-    elif sal_max is not None:
-         salary = f"Up to ${sal_max:,.0f}"
-
-    else:
-         salary = "Not listed"
+        else:
+             salary = "Not listed"
               
 
         desc    = (job.get("description") or "")[:3000]
@@ -207,12 +183,12 @@ COLUMNS = [
     ("Salary",                         22),
     ("Posted",                         20),
     ("Skills Match",                   30),
-    (f"Match Score ",                  14),
+    ("Match Score ",                  14),
     ("Key Qualifications",             45),
     ("Apply Link",                     15),
 ]
 
-SCORE_COL = f"Match Score
+SCORE_COL = "Match Score"
 
 
 def build_excel(jobs: list[dict], filepath: Path) -> None:
@@ -293,7 +269,7 @@ def build_excel(jobs: list[dict], filepath: Path) -> None:
         ws.row_dimensions[row_num].height = 32
 
     ws.freeze_panes = "A5"
-    ws.auto_filter.ref = f"A4:{last_col}4"
+    ws.auto_filter.ref = f"A4:{last_col}{ws.max_row}"
     wb.save(filepath)
     print(f"  Excel saved: {filepath.name}")
 
