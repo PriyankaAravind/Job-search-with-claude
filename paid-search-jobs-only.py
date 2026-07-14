@@ -212,7 +212,7 @@ def build_excel(jobs: list[dict], filepath: Path) -> None:
 
     # Title row
     ws.merge_cells(f"A1:{last_col}1")
-    ws["A1"] = f"Data Analyst Job Search  —  {run_date}  |  Past 24 Hours"
+    ws["A1"] = f"Paid Search Job Search  —  {run_date}  |  Past 24 Hours"
     ws["A1"].font = Font(name="Arial", bold=True, size=14, color="1F4E79")
     ws["A1"].alignment = Alignment(horizontal="center", vertical="center")
     ws.row_dimensions[1].height = 28
@@ -288,7 +288,7 @@ def send_email(excel_path: Path, job_count: int,
     subject = f"Paid Search Jobs — {job_count} Roles Found — {today}"
     body    = f"""Good morning!
 
-Here are the Data Analyst roles posted in the last 24 hours.
+Here are the Paid Search roles posted in the last 24 hours.
 
   Total roles found:      {job_count}
   Skills matched against: {', '.join(SKILLS)}
@@ -328,7 +328,7 @@ def main():
     app_password   = os.environ["GMAIL_APP_PASSWORD"]
 
     today     = datetime.now().strftime("%Y-%m-%d")
-    out_excel = OUTPUT_DIR / f"DataAnalyst_Jobs_{today}.xlsx"
+    out_excel = OUTPUT_DIR / f"PaidSearch_Jobs_{today}.xlsx"
 
     print("=== Paid Search Job Search ===")
     print(f"Date: {today}\n")
