@@ -21,12 +21,12 @@ from openpyxl.utils import get_column_letter
 
 # ── Config — edit these to match your profile ─────────────────────────────────
 
-SKILLS = ["Python", "SQL", "Excel", "PowerBI","Power BI", "Tableau", "statistics", "dashboard","reporting","visualization","data analytics",
-          "Data analysis", "Stakeholder management", "Cross functional","google analytics" "Growth Analyst","Digital Analyst",
-          "Marketing Data Analyst","Campaign Analyst","Analytics Specialist","Product Analyst"]
+SKILLS = [ "GA4","looker studio", "GTM","microsoft ads", "full funnel", "campaign management", "client management", "bid management", 
+        "budget management","google ads","google adwords", "bing ads","google ads editor", "google sheets","Budget", "bid",
+        "presentation","insights","campaign optimization"]
 
-SEARCH_QUERIES = ["Data Analyst","Junior Data Analyst","Associate Data Analyst","Business Analyst","Business Intelligence (BI) Analyst",
-    "BI Analyst","Marketing Analyst","Insights Analyst","Reporting Analyst"]
+SEARCH_QUERIES = ["Senior Paid Search Specialist","Senior SEM Specialist","Senior PPC Specialist","Search Marketing Analyst","Senior Paid Search Strategist",
+    "Paid Search Manager","SEM Manager","PPC Manager","Senior Paid Search Manager","SEM Account Manager","Performance Marketing Manager","paid media strategist"]
 
 SKILLS = list(dict.fromkeys(SKILLS))
 SEARCH_QUERIES = list(dict.fromkeys(SEARCH_QUERIES))
@@ -103,8 +103,8 @@ def score_job(job: dict) -> int:
     title = (job.get("title") or "").lower()
     desc = (job.get("description") or "").lower()
     text = f"{title} {desc}"
-    title_keywords = {"data analyst":50,"marketing analyst":45,"business analyst":40,"insights analyst":45,"reporting analyst":30,
-        "bi analyst":40,"business intelligence":40}
+    title_keywords = {"data analyst":30,"marketing analyst":45,"business analyst":30,"insights analyst":50,"reporting analyst":40,
+        "bi analyst":30,"business intelligence":30, "sem":50,"ppc":0, "performance marketing":40}
 
     for keyword, pts in title_keywords.items():
         if keyword in title:
@@ -114,8 +114,8 @@ def score_job(job: dict) -> int:
     # Skills
     #####################################################
     text = f"{title} {desc}"
-    skill_weights = {"python": 8,"sql": 8,"excel": 6,"power bi": 8,"powerbi": 8,"tableau": 6,"statistics": 6,"dashboard": 5,
-    "reporting": 5,"visualization": 5,"data analytics": 8,"data analysis": 8,"google analytics": 4}
+    skill_weights = {"Google Ads": 8,"Search ads":8,"sql": 8,"excel": 6,"tableau": 6,"statistics": 6,"dashboard": 5,
+    "reporting": 5,"visualization": 5,"data analytics": 7,"data analysis": 7,"google analytics": 7}
     
     for skill, pts in skill_weights.items():
         if skill in text:
@@ -285,7 +285,7 @@ def build_excel(jobs: list[dict], filepath: Path) -> None:
 def send_email(excel_path: Path, job_count: int,
                gmail_address: str, app_password: str) -> None:
     today   = datetime.now().strftime("%B %d, %Y")
-    subject = f"Data Analyst Jobs — {job_count} Roles Found — {today}"
+    subject = f"Paid Search Jobs — {job_count} Roles Found — {today}"
     body    = f"""Good morning!
 
 Here are the Data Analyst roles posted in the last 24 hours.
@@ -330,7 +330,7 @@ def main():
     today     = datetime.now().strftime("%Y-%m-%d")
     out_excel = OUTPUT_DIR / f"DataAnalyst_Jobs_{today}.xlsx"
 
-    print("=== Data Analyst Job Search ===")
+    print("=== Paid Search Job Search ===")
     print(f"Date: {today}\n")
 
     print("[1/3] Fetching jobs from Adzuna...")
