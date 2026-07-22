@@ -105,8 +105,7 @@ def score_job(job: dict) -> int:
     title = (job.get("title") or "").lower()
     desc = (job.get("description") or "").lower()
     text = f"{title} {desc}"
-    title_keywords = {"data analyst":30,"marketing analyst":45,"business analyst":30,"insights analyst":50,"reporting analyst":40,
-        "bi analyst":30,"business intelligence":30, "sem":50,"ppc":50, "performance marketing":40}
+    title_keywords = {"marketing analyst":45,"insights analyst":50,"reporting analyst":40,"sem":50,"ppc":50, "performance marketing":40}
 
     for keyword, pts in title_keywords.items():
         if keyword in title:
@@ -117,7 +116,7 @@ def score_job(job: dict) -> int:
     #####################################################
     text = f"{title} {desc}"
     skill_weights = {"Google Ads": 8,"Search ads":8,"sql": 8,"excel": 6,"tableau": 6,"statistics": 6,"dashboard": 5,
-    "reporting": 5,"visualization": 5,"data analytics": 7,"data analysis": 7,"google analytics": 7,"paid search":8}
+    "reporting": 5,"visualization": 5,"google analytics": 7,"paid search":8}
     
     for skill, pts in skill_weights.items():
         if skill in text:
